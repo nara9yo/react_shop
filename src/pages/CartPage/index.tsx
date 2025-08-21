@@ -8,21 +8,13 @@ import {
   clearCart 
 } from '../../store/slices/cartSlice'
 import { useNavigate } from 'react-router-dom'
-import { useEffect } from 'react'
 import type { CartItem } from '../../types'
+import { toast } from 'react-hot-toast'
 
 const CartPage = () => {
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
   const { items, total } = useAppSelector((state) => state.cart)
-  const { isAuthenticated } = useAppSelector((state) => state.auth)
-
-  // 로그인이 필요한 경우 로그인 페이지로 이동 (렌더 중 호출 금지)
-  useEffect(() => {
-    if (!isAuthenticated) {
-      navigate('/login', { state: { from: '/cart' } })
-    }
-  }, [isAuthenticated, navigate])
 
   // 장바구니가 비어있는 경우
   if (items.length === 0) {
@@ -62,23 +54,27 @@ const CartPage = () => {
   const handleQuantityChange = (item: CartItem, newQuantity: number) => {
     if (newQuantity >= 1 && newQuantity <= 99) {
       dispatch(updateQuantity({ id: item.id, quantity: newQuantity }))
+      toast.success('수량이 변경되었습니다.')
     }
   }
 
   // 수량 증가 핸들러
   const handleIncreaseQuantity = (itemId: number) => {
     dispatch(increaseQuantity(itemId))
+    toast.success('수량이 증가되었습니다.')
   }
 
   // 수량 감소 핸들러
   const handleDecreaseQuantity = (itemId: number) => {
     dispatch(decreaseQuantity(itemId))
+    toast.success('수량이 감소되었습니다.')
   }
 
   // 상품 제거 핸들러
   const handleRemoveItem = (itemId: number) => {
     if (window.confirm('이 상품을 장바구니에서 제거하시겠습니까?')) {
       dispatch(removeFromCart(itemId))
+      toast.success('상품이 장바구니에서 제거되었습니다.')
     }
   }
 
@@ -86,12 +82,13 @@ const CartPage = () => {
   const handleClearCart = () => {
     if (window.confirm('장바구니의 모든 상품을 제거하시겠습니까?')) {
       dispatch(clearCart())
+      toast.success('장바구니를 비웠습니다.')
     }
   }
 
-  // 체크아웃 핸들러 (향후 구현 예정)
+  // 주문하기 핸들러 (향후 구현 예정)
   const handleCheckout = () => {
-    alert('체크아웃 기능은 향후 구현 예정입니다.')
+    toast('주문하기 기능은 향후 구현 예정입니다.', { icon: '🛒' })
   }
 
   return (

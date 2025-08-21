@@ -1,5 +1,5 @@
 // 상품 상세 페이지 컴포넌트
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
 import { fetchProductById } from '../../store/slices/productSlice'
@@ -7,6 +7,7 @@ import { addToCart } from '../../store/slices/cartSlice'
 import Loading from '../../components/Loading'
 import ErrorMessage from '../../components/ErrorMessage'
 import type { Product } from '../../types'
+import { toast } from 'react-hot-toast'
 
 const ProductDetailPage = () => {
   const { id } = useParams<{ id: string }>()
@@ -19,10 +20,16 @@ const ProductDetailPage = () => {
   
   // Redux 상태
   const { products, isLoading, error } = useAppSelector((state) => state.products)
-  const { isAuthenticated } = useAppSelector((state) => state.auth)
+  const { items: cartItems } = useAppSelector((state) => state.cart)
   
   // 현재 상품 찾기
   const product = products.find(p => p.id === Number(id))
+
+  // 이미 장바구니에 담겼는지 여부
+  const isInCart = useMemo(() => {
+    if (!product) return false
+    return cartItems.some((item) => item.id === product.id)
+  }, [cartItems, product])
   
   // 컴포넌트 마운트 시 상품 데이터 가져오기
   useEffect(() => {
@@ -38,23 +45,14 @@ const ProductDetailPage = () => {
     }
   }
   
-  // 장바구니에 추가 핸들러
+  // 장바구니에 추가 핸들러 (로그인 없이 가능)
   const handleAddToCart = () => {
-    if (!isAuthenticated) {
-      // 로그인이 필요한 경우 로그인 페이지로 이동
-      navigate('/login', { state: { from: `/product/${id}` } })
-      return
-    }
-    
     if (product) {
-      // 선택된 수량만큼 장바구니에 추가
       for (let i = 0; i < quantity; i++) {
         dispatch(addToCart(product))
       }
-      
-      // 성공 메시지 표시 (간단한 알림)
-      alert(`${product.title}을(를) 장바구니에 ${quantity}개 추가했습니다!`)
-      setQuantity(1) // 수량 초기화
+      toast.success(`${product.title}을(를) 장바구니에 ${quantity}개 추가했습니다!`)
+      setQuantity(1)
     }
   }
   
@@ -221,20 +219,20 @@ const ProductDetailPage = () => {
             </div>
           </div>
           
-          {/* 장바구니 추가 버튼 */}
+          {/* 장바구니 추가/이동 버튼 */}
           <div className="space-y-3">
             <button
               onClick={handleAddToCart}
-              className="w-full bg-blue-500 hover:bg-blue-600 text-white py-4 px-6 rounded-lg font-semibold text-lg transition-colors"
+              className={`w-full ${isInCart ? 'bg-gray-400 hover:bg-gray-500' : 'bg-blue-500 hover:bg-blue-600'} text-white py-4 px-6 rounded-lg font-semibold text-lg transition-colors`}
             >
-              장바구니에 담기
+              {isInCart ? '장바구니에 담긴 제품' : '장바구니에 담기'}
             </button>
-            
-            {!isAuthenticated && (
-              <p className="text-sm text-gray-500 text-center">
-                장바구니에 상품을 담으려면 로그인이 필요합니다.
-              </p>
-            )}
+            <button
+              onClick={() => navigate('/cart')}
+              className="w-full bg-white border border-blue-500 text-blue-600 hover:bg-blue-50 py-4 px-6 rounded-lg font-semibold text-lg transition-colors"
+            >
+              장바구니로 이동
+            </button>
           </div>
           
           {/* 추가 정보 */}

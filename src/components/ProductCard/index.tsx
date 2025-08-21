@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom'
 import { useAppDispatch } from '../../store/hooks'
 import { addToCart } from '../../store/slices/cartSlice'
 import type { Product } from '../../types'
+import LazyImage from '../LazyImage'
+import { toast } from 'react-hot-toast'
 
 interface ProductCardProps {
   product: Product
@@ -16,6 +18,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
     e.preventDefault() // Link 이벤트 방지
     e.stopPropagation()
     dispatch(addToCart(product))
+    toast.success(`${product.title}을(를) 장바구니에 1개 추가했습니다!`)
   }
 
   // 가격 포맷팅
@@ -23,35 +26,33 @@ const ProductCard = ({ product }: ProductCardProps) => {
     return `$${price.toFixed(2)}`
   }
 
-  // 제목 길이 제한
-  const truncateTitle = (title: string, maxLength: number = 50) => {
-    return title.length > maxLength ? title.substring(0, maxLength) + '...' : title
-  }
-
   return (
     <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden h-full flex flex-col">
       <Link to={`/product/${product.id}`} className="block flex flex-col h-full">
         {/* 상품 이미지 */}
-        <div className="aspect-square bg-gray-100 flex items-center justify-center p-4">
-          <img
-            src={product.image}
-            alt={product.title}
-            className="w-4/5 h-4/5 object-contain"
-            loading="lazy"
-          />
+        <div className="aspect-square relative bg-gray-100">
+          <div className="absolute inset-0 flex items-center justify-center p-4">
+            <LazyImage
+              src={product.image}
+              alt={product.title}
+              className="w-4/5 h-4/5 object-contain"
+              sizes="(min-width: 1280px) 25vw, (min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+            />
+          </div>
         </div>
 
         {/* 상품 정보 */}
         <div className="p-4 flex flex-col flex-1">
-          {/* 카테고리 */}
-          <span className="text-xs text-gray-500 uppercase tracking-wide font-semibold mb-2">
-            {product.category}
-          </span>
-
-          {/* 상품명 */}
-          <h3 className="text-lg font-semibold text-gray-900 line-clamp-2 mb-3 min-h-[3.5rem]">
-            {truncateTitle(product.title)}
-          </h3>
+          {/* 상단 메타 (카테고리 + 제목) 고정 높이로 정렬 유지 */}
+          <div className="mb-3 h-[4.75rem] pb-0.5 overflow-hidden">
+            <span className="block text-xs text-gray-500 uppercase tracking-wide font-semibold mb-2">
+              {product.category}
+            </span>
+            {/* 제목: 2줄 초과 시 ... 으로 줄임 (CSS line-clamp) */}
+            <h3 className="text-lg font-semibold text-gray-900 line-clamp-2">
+              {product.title}
+            </h3>
+          </div>
 
           {/* 평점 */}
           <div className="flex items-center mb-4">
