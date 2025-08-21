@@ -50,11 +50,11 @@ const HomePage = () => {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 bg-blue-50 p-8">
       {/* 페이지 헤더 */}
-      <div className="text-center">
-        <h1 className="text-4xl font-bold text-gray-900 mb-4">🛍️ Shop</h1>
-        <p className="text-lg text-gray-600">최고의 상품을 합리적인 가격에 만나보세요</p>
+      <div className="text-center bg-white p-6 rounded-lg shadow-lg border-2 border-blue-500">
+        <h1 className="text-4xl font-bold text-blue-600 mb-4">🛍️ Shop</h1>
+        <p className="text-lg text-gray-700">최고의 상품을 합리적인 가격에 만나보세요</p>
       </div>
 
       {/* 검색 및 필터 */}

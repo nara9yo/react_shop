@@ -1,6 +1,7 @@
 // 장바구니 상태 관리 슬라이스
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { CartState, CartItem, Product } from '../../types';
+import { createSlice } from '@reduxjs/toolkit';
+import type { PayloadAction } from '@reduxjs/toolkit';
+import type { CartState, CartItem, Product } from '../../types';
 
 // 초기 상태
 const initialState: CartState = {
@@ -26,10 +27,7 @@ const cartSlice = createSlice({
       } else {
         // 새로운 상품이면 장바구니에 추가
         const newItem: CartItem = {
-          id: product.id,
-          title: product.title,
-          price: product.price,
-          image: product.image,
+          ...product,
           quantity: 1,
         };
         state.items.push(newItem);

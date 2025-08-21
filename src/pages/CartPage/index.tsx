@@ -8,7 +8,8 @@ import {
   clearCart 
 } from '../../store/slices/cartSlice'
 import { useNavigate } from 'react-router-dom'
-import { CartItem } from '../../types'
+import { useEffect } from 'react'
+import type { CartItem } from '../../types'
 
 const CartPage = () => {
   const navigate = useNavigate()
@@ -16,11 +17,12 @@ const CartPage = () => {
   const { items, total } = useAppSelector((state) => state.cart)
   const { isAuthenticated } = useAppSelector((state) => state.auth)
 
-  // 로그인이 필요한 경우 로그인 페이지로 이동
-  if (!isAuthenticated) {
-    navigate('/login', { state: { from: '/cart' } })
-    return null
-  }
+  // 로그인이 필요한 경우 로그인 페이지로 이동 (렌더 중 호출 금지)
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate('/login', { state: { from: '/cart' } })
+    }
+  }, [isAuthenticated, navigate])
 
   // 장바구니가 비어있는 경우
   if (items.length === 0) {

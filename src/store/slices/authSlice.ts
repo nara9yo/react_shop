@@ -1,6 +1,7 @@
 // 인증 상태 관리 슬라이스
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { AuthState, User } from '../../types';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import type { PayloadAction } from '@reduxjs/toolkit';
+import type { AuthState, User } from '../../types';
 import { signIn, signUp, logOut, onAuthStateChange } from '../../services/auth';
 
 // 초기 상태

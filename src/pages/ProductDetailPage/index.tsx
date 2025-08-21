@@ -6,7 +6,7 @@ import { fetchProductById } from '../../store/slices/productSlice'
 import { addToCart } from '../../store/slices/cartSlice'
 import Loading from '../../components/Loading'
 import ErrorMessage from '../../components/ErrorMessage'
-import { Product } from '../../types'
+import type { Product } from '../../types'
 
 const ProductDetailPage = () => {
   const { id } = useParams<{ id: string }>()

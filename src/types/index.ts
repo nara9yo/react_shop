@@ -1,3 +1,5 @@
+// 타입 정의 파일 - 애플리케이션 전역 타입 모음
+
 // 상품 관련 타입 정의
 export interface Product {
   id: number;
@@ -13,11 +15,7 @@ export interface Product {
 }
 
 // 장바구니 아이템 타입 정의
-export interface CartItem {
-  id: number;
-  title: string;
-  price: number;
-  image: string;
+export interface CartItem extends Product {
   quantity: number;
 }
 

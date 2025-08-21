@@ -2,7 +2,7 @@
 import { Link } from 'react-router-dom'
 import { useAppDispatch } from '../../store/hooks'
 import { addToCart } from '../../store/slices/cartSlice'
-import { Product } from '../../types'
+import type { Product } from '../../types'
 
 interface ProductCardProps {
   product: Product
@@ -29,32 +29,32 @@ const ProductCard = ({ product }: ProductCardProps) => {
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden">
-      <Link to={`/product/${product.id}`} className="block">
+    <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden h-full flex flex-col">
+      <Link to={`/product/${product.id}`} className="block flex flex-col h-full">
         {/* 상품 이미지 */}
         <div className="aspect-square bg-gray-100 flex items-center justify-center p-4">
           <img
             src={product.image}
             alt={product.title}
-            className="max-w-full max-h-full object-contain"
+            className="w-4/5 h-4/5 object-contain"
             loading="lazy"
           />
         </div>
 
         {/* 상품 정보 */}
-        <div className="p-4">
+        <div className="p-4 flex flex-col flex-1">
           {/* 카테고리 */}
-          <span className="text-xs text-gray-500 uppercase tracking-wide font-semibold">
+          <span className="text-xs text-gray-500 uppercase tracking-wide font-semibold mb-2">
             {product.category}
           </span>
 
           {/* 상품명 */}
-          <h3 className="mt-1 text-lg font-semibold text-gray-900 line-clamp-2">
+          <h3 className="text-lg font-semibold text-gray-900 line-clamp-2 mb-3 min-h-[3.5rem]">
             {truncateTitle(product.title)}
           </h3>
 
           {/* 평점 */}
-          <div className="mt-2 flex items-center">
+          <div className="flex items-center mb-4">
             <div className="flex items-center">
               {[...Array(5)].map((_, i) => (
                 <svg
@@ -77,13 +77,13 @@ const ProductCard = ({ product }: ProductCardProps) => {
           </div>
 
           {/* 가격 및 버튼 */}
-          <div className="mt-4 flex items-center justify-between">
+          <div className="mt-auto flex items-center justify-between">
             <span className="text-2xl font-bold text-gray-900">
               {formatPrice(product.price)}
             </span>
             <button
               onClick={handleAddToCart}
-              className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md font-medium transition-colors"
+              className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md font-medium transition-colors whitespace-nowrap"
             >
               장바구니 담기
             </button>

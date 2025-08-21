@@ -1,6 +1,6 @@
 // API 서비스 함수들
 import axios from 'axios';
-import { Product } from '../types';
+import type { Product } from '../types';
 
 // Axios 인스턴스 생성
 const api = axios.create({
@@ -11,7 +11,6 @@ const api = axios.create({
 // 요청 인터셉터 (로깅, 인증 토큰 추가 등)
 api.interceptors.request.use(
   (config) => {
-    console.log('API 요청:', config.method?.toUpperCase(), config.url);
     return config;
   },
   (error) => {
@@ -23,11 +22,9 @@ api.interceptors.request.use(
 // 응답 인터셉터 (에러 처리, 로깅 등)
 api.interceptors.response.use(
   (response) => {
-    console.log('API 응답:', response.status, response.config.url);
     return response;
   },
   (error) => {
-    console.error('API 응답 오류:', error.response?.status, error.response?.data);
     return Promise.reject(error);
   }
 );
@@ -40,7 +37,6 @@ export const productAPI = {
       const response = await api.get<Product[]>('/products');
       return response.data;
     } catch (error) {
-      console.error('상품 목록 가져오기 실패:', error);
       throw new Error('상품 목록을 가져오는데 실패했습니다.');
     }
   },
@@ -51,7 +47,6 @@ export const productAPI = {
       const response = await api.get<Product>(`/products/${id}`);
       return response.data;
     } catch (error) {
-      console.error('상품 상세 정보 가져오기 실패:', error);
       throw new Error('상품 정보를 가져오는데 실패했습니다.');
     }
   },
@@ -62,7 +57,6 @@ export const productAPI = {
       const response = await api.get<Product[]>(`/products/category/${category}`);
       return response.data;
     } catch (error) {
-      console.error('카테고리별 상품 가져오기 실패:', error);
       throw new Error('카테고리별 상품을 가져오는데 실패했습니다.');
     }
   },
@@ -73,7 +67,6 @@ export const productAPI = {
       const response = await api.get<string[]>('/products/categories');
       return response.data;
     } catch (error) {
-      console.error('카테고리 목록 가져오기 실패:', error);
       throw new Error('카테고리 목록을 가져오는데 실패했습니다.');
     }
   },

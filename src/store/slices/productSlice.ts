@@ -1,6 +1,7 @@
 // 상품 상태 관리 슬라이스
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { ProductState, Product } from '../../types';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import type { PayloadAction } from '@reduxjs/toolkit';
+import type { ProductState, Product } from '../../types';
 import { productAPI } from '../../services/api';
 
 // 초기 상태
@@ -139,7 +140,7 @@ const productSlice = createSlice({
 
 // 상품 필터링 헬퍼 함수
 const filterProducts = (state: ProductState) => {
-  let filtered = state.products;
+  let filtered = [...state.products];
 
   // 카테고리 필터링
   if (state.selectedCategory !== 'all') {

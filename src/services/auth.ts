@@ -4,11 +4,10 @@ import {
   signInWithEmailAndPassword,
   signOut,
   onAuthStateChanged,
-  User as FirebaseUser,
   updateProfile,
 } from 'firebase/auth';
 import { auth } from './firebase';
-import { User } from '../types';
+import type { User } from '../types';
 
 // 회원가입
 export const signUp = async (email: string, password: string, displayName?: string): Promise<User> => {
@@ -44,7 +43,9 @@ export const signIn = async (email: string, password: string): Promise<User> => 
       displayName: user.displayName || undefined,
     };
   } catch (error: any) {
-    console.error('로그인 실패:', error);
+    if (import.meta.env.DEV) {
+      console.warn('로그인 실패:', error);
+    }
     throw new Error(getAuthErrorMessage(error.code));
   }
 };
@@ -61,7 +62,7 @@ export const logOut = async (): Promise<void> => {
 
 // 인증 상태 변경 감지
 export const onAuthStateChange = (callback: (user: User | null) => void) => {
-  return onAuthStateChanged(auth, (firebaseUser: FirebaseUser | null) => {
+  return onAuthStateChanged(auth, (firebaseUser: any) => {
     if (firebaseUser) {
       const user: User = {
         uid: firebaseUser.uid,
@@ -84,12 +85,17 @@ const getAuthErrorMessage = (errorCode: string): string => {
       return '등록되지 않은 이메일입니다.';
     case 'auth/wrong-password':
       return '잘못된 비밀번호입니다.';
+    case 'auth/invalid-credential':
+    case 'auth/invalid-login-credentials':
+      return '이메일 또는 비밀번호가 올바르지 않습니다.';
     case 'auth/email-already-in-use':
       return '이미 사용 중인 이메일입니다.';
     case 'auth/weak-password':
       return '비밀번호는 6자리 이상이어야 합니다.';
     case 'auth/invalid-email':
       return '유효하지 않은 이메일 형식입니다.';
+    case 'auth/missing-password':
+      return '비밀번호를 입력해주세요.';
     case 'auth/network-request-failed':
       return '네트워크 연결을 확인해주세요.';
     case 'auth/too-many-requests':
