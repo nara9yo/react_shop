@@ -1,12 +1,29 @@
 // 푸터 컴포넌트
+import { Link } from 'react-router-dom'
+import { useAppDispatch, useAppSelector } from '../../store/hooks'
+import { logoutUser } from '../../store/slices/authSlice'
+import { toast } from 'react-hot-toast'
+
 const Footer = () => {
+  const dispatch = useAppDispatch()
+  const { isAuthenticated } = useAppSelector((state) => state.auth)
+
+  const handleLogout = async () => {
+    try {
+      await dispatch(logoutUser()).unwrap()
+      toast.success('로그아웃 되었습니다.')
+    } catch {
+      toast.error('로그아웃에 실패했습니다.')
+    }
+  }
+
   return (
     <footer className="bg-gray-800 text-white py-8 mt-auto">
       <div className="container mx-auto px-4">
         <div className="grid md:grid-cols-3 gap-8">
           {/* 회사 정보 */}
           <div>
-            <h3 className="text-lg font-bold mb-4">🛍️ Shop</h3>
+            <h3 className="text-lg font-bold mb-4">🛍️ ReactShop</h3>
             <p className="text-gray-300 text-sm">
               최고의 상품을 합리적인 가격에 제공하는
               <br />
@@ -19,19 +36,28 @@ const Footer = () => {
             <h3 className="text-lg font-bold mb-4">빠른 링크</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <a href="/" className="text-gray-300 hover:text-white transition-colors">
+                <Link to="/" className="text-gray-300 hover:text-white transition-colors">
                   홈
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/cart" className="text-gray-300 hover:text-white transition-colors">
+                <Link to="/cart" className="text-gray-300 hover:text-white transition-colors">
                   장바구니
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/login" className="text-gray-300 hover:text-white transition-colors">
-                  로그인
-                </a>
+                {!isAuthenticated ? (
+                  <Link to="/login" className="text-gray-300 hover:text-white transition-colors">
+                    로그인
+                  </Link>
+                ) : (
+                  <button
+                    onClick={handleLogout}
+                    className="text-gray-300 hover:text-white transition-colors"
+                  >
+                    로그아웃
+                  </button>
+                )}
               </li>
             </ul>
           </div>
@@ -50,7 +76,7 @@ const Footer = () => {
         {/* 저작권 */}
         <div className="border-t border-gray-700 mt-8 pt-4 text-center">
           <p className="text-gray-400 text-sm">
-            © 2024 Shop. All rights reserved. Made with React & TypeScript.
+            © 2024 ReactShop. All rights reserved. Made with React & TypeScript.
           </p>
         </div>
       </div>

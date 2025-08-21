@@ -79,6 +79,9 @@ const LoginPage = () => {
           <div className="space-y-4">
             {/* 이메일 입력 */}
             <div>
+              <label htmlFor="email" className="block text-sm font-medium text-red-700">
+                테스트 계정 : abc@test.com / 123456
+              </label>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700">
                 이메일 주소
               </label>

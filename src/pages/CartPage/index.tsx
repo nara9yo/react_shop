@@ -1,4 +1,5 @@
 // 장바구니 페이지 컴포넌트
+import { useState } from 'react'
 import { useAppSelector, useAppDispatch } from '../../store/hooks'
 import { 
   removeFromCart, 
@@ -10,11 +11,16 @@ import {
 import { useNavigate } from 'react-router-dom'
 import type { CartItem } from '../../types'
 import { toast } from 'react-hot-toast'
+import ConfirmDialog from '../../components/ConfirmDialog'
 
 const CartPage = () => {
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
   const { items, total } = useAppSelector((state) => state.cart)
+
+  // Confirm dialog state
+  const [isClearOpen, setIsClearOpen] = useState(false)
+  const [pendingRemoveId, setPendingRemoveId] = useState<number | null>(null)
 
   // 장바구니가 비어있는 경우
   if (items.length === 0) {
@@ -70,20 +76,22 @@ const CartPage = () => {
     toast.success('수량이 감소되었습니다.')
   }
 
-  // 상품 제거 핸들러
-  const handleRemoveItem = (itemId: number) => {
-    if (window.confirm('이 상품을 장바구니에서 제거하시겠습니까?')) {
-      dispatch(removeFromCart(itemId))
+  // 상품 제거(모달 오픈)
+  const openRemoveItem = (itemId: number) => setPendingRemoveId(itemId)
+  const confirmRemoveItem = () => {
+    if (pendingRemoveId !== null) {
+      dispatch(removeFromCart(pendingRemoveId))
       toast.success('상품이 장바구니에서 제거되었습니다.')
+      setPendingRemoveId(null)
     }
   }
 
-  // 장바구니 비우기 핸들러
-  const handleClearCart = () => {
-    if (window.confirm('장바구니의 모든 상품을 제거하시겠습니까?')) {
-      dispatch(clearCart())
-      toast.success('장바구니를 비웠습니다.')
-    }
+  // 장바구니 비우기(모달 오픈)
+  const openClearCart = () => setIsClearOpen(true)
+  const confirmClearCart = () => {
+    dispatch(clearCart())
+    toast.success('장바구니를 비웠습니다.')
+    setIsClearOpen(false)
   }
 
   // 주문하기 핸들러 (향후 구현 예정)
@@ -93,11 +101,31 @@ const CartPage = () => {
 
   return (
     <div className="max-w-6xl mx-auto">
+      {/* Confirm Dialogs */}
+      <ConfirmDialog
+        isOpen={isClearOpen}
+        title="장바구니 비우기"
+        message="장바구니의 모든 상품을 제거하시겠습니까?"
+        confirmText="비우기"
+        cancelText="취소"
+        onConfirm={confirmClearCart}
+        onCancel={() => setIsClearOpen(false)}
+      />
+      <ConfirmDialog
+        isOpen={pendingRemoveId !== null}
+        title="상품 제거"
+        message="해당 상품을 장바구니에서 제거하시겠습니까?"
+        confirmText="제거"
+        cancelText="취소"
+        onConfirm={confirmRemoveItem}
+        onCancel={() => setPendingRemoveId(null)}
+      />
+
       {/* 페이지 헤더 */}
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold text-gray-900">장바구니</h1>
         <button
-          onClick={handleClearCart}
+          onClick={openClearCart}
           className="text-red-500 hover:text-red-700 font-medium transition-colors"
         >
           장바구니 비우기
@@ -175,7 +203,7 @@ const CartPage = () => {
 
               {/* 삭제 버튼 */}
               <button
-                onClick={() => handleRemoveItem(item.id)}
+                onClick={() => openRemoveItem(item.id)}
                 className="text-red-500 hover:text-red-700 transition-colors"
                 title="상품 제거"
               >

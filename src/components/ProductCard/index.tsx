@@ -1,6 +1,6 @@
 // 상품 카드 컴포넌트
 import { Link } from 'react-router-dom'
-import { useAppDispatch } from '../../store/hooks'
+import { useAppDispatch, useAppSelector } from '../../store/hooks'
 import { addToCart } from '../../store/slices/cartSlice'
 import type { Product } from '../../types'
 import LazyImage from '../LazyImage'
@@ -12,6 +12,8 @@ interface ProductCardProps {
 
 const ProductCard = ({ product }: ProductCardProps) => {
   const dispatch = useAppDispatch()
+  const { items: cartItems } = useAppSelector((state) => state.cart)
+  const isInCart = cartItems.some((item) => item.id === product.id)
 
   // 장바구니에 상품 추가
   const handleAddToCart = (e: React.MouseEvent) => {
@@ -84,9 +86,9 @@ const ProductCard = ({ product }: ProductCardProps) => {
             </span>
             <button
               onClick={handleAddToCart}
-              className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md font-medium transition-colors whitespace-nowrap"
+              className={`${isInCart ? 'bg-gray-400 hover:bg-gray-500' : 'bg-blue-500 hover:bg-blue-600'} text-white px-4 py-2 rounded-md font-medium transition-colors whitespace-nowrap`}
             >
-              장바구니 담기
+              {isInCart ? '장바구니에 담긴 제품' : '장바구니 담기'}
             </button>
           </div>
         </div>
