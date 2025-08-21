@@ -6,8 +6,16 @@ React와 TypeScript를 사용하여 구축된 현대적인 온라인 쇼핑몰 �
 
 - **상품 관리**: FakeStore API를 통한 상품 목록 및 상세 정보 표시
 - **사용자 인증**: Firebase Authentication을 통한 이메일/비밀번호 로그인 및 회원가입
-- **장바구니**: 상품 추가/제거, 수량 조절, 총액 계산
+- **장바구니**:
+  - 로그인 없이도 담기/조회 가능
+  - 상품 추가/제거, 수량 조절, 총액 계산
+  - 헤더에서 마우스 호버 시 미리보기(미니카트) 표시
+  - 메인/상세 페이지에서 이미 담긴 상품은 버튼에 “장바구니에 담긴 제품”으로 표시
 - **검색 및 필터링**: 상품명, 카테고리별 검색 및 필터링
+- **알림/모달**:
+  - `react-hot-toast` 기반 토스트 알림 (담기/수량 변경 등)
+  - 커스텀 확인 모달(삭제/비우기), 정보 모달(주문 안내)
+- **이미지 최적화**: IntersectionObserver 기반 Lazy Image + 스켈레톤
 - **반응형 디자인**: 모바일과 데스크톱에서 최적화된 사용자 경험
 
 ## 🛠️ 기술 스택
@@ -19,6 +27,7 @@ React와 TypeScript를 사용하여 구축된 현대적인 온라인 쇼핑몰 �
 - **Authentication**: Firebase
 - **HTTP Client**: Axios
 - **Routing**: React Router DOM
+- **UX 보조**: react-hot-toast, 커스텀 Dialog 컴포넌트
 
 ## 📁 프로젝트 구조
 
@@ -27,7 +36,10 @@ src/
 ├── components/          # 재사용 가능한 컴포넌트
 │   ├── Loading/        # 로딩 컴포넌트
 │   ├── ErrorMessage/   # 에러 메시지 컴포넌트
-│   └── ProductCard/    # 상품 카드 컴포넌트
+│   ├── ProductCard/    # 상품 카드 컴포넌트
+│   ├── LazyImage/      # 이미지 지연 로딩 컴포넌트
+│   ├── ConfirmDialog/  # 확인 모달
+│   └── InfoDialog/     # 정보 모달(주문 안내 등)
 ├── pages/              # 페이지 컴포넌트
 │   ├── HomePage/       # 홈페이지 (상품 목록)
 │   ├── ProductDetailPage/ # 상품 상세 페이지
@@ -35,8 +47,8 @@ src/
 │   ├── LoginPage/      # 로그인 페이지
 │   └── RegisterPage/   # 회원가입 페이지
 ├── layout/             # 레이아웃 컴포넌트
-│   ├── Navbar/         # 네비게이션 바
-│   └── Footer/         # 푸터
+│   ├── Navbar/         # 네비게이션 바 (미니카트 프리뷰 포함)
+│   └── Footer/         # 푸터 (로그인 상태에 따른 빠른 링크)
 ├── store/              # Redux 상태 관리
 │   ├── slices/         # Redux 슬라이스
 │   │   ├── authSlice.ts    # 인증 상태 관리
@@ -87,17 +99,12 @@ src/
    ```
 
 5. **브라우저에서 확인**
-   - http://localhost:5173 으로 접속
+   - `http://localhost:5173`
 
-### 빌드
+### 빌드/미리보기
 
 ```bash
 npm run build
-```
-
-### 미리보기
-
-```bash
 npm run preview
 ```
 
@@ -114,113 +121,56 @@ VITE_FIREBASE_MESSAGING_SENDER_ID=your_messaging_sender_id
 VITE_FIREBASE_APP_ID=your_app_id
 ```
 
-## 📱 주요 페이지
+## 📱 주요 페이지 & UX
 
 ### 🏠 홈페이지 (`/`)
 - 상품 목록 그리드 뷰
-- 카테고리별 필터링
-- 검색 기능
-- 상품 카드 (이미지, 이름, 가격, 장바구니 추가 버튼)
+- 카테고리별 필터링, 검색
+- 카드에서 즉시 담기 + 토스트, 이미 담긴 상품은 버튼이 회색 “장바구니에 담긴 제품”으로 표시
 
 ### 📦 상품 상세 페이지 (`/product/:id`)
-- 상품 상세 정보
-- 이미지 표시
-- 수량 선택
-- 장바구니 추가 기능
+- 상세 정보, 수량 선택, 담기/장바구니로 이동
+- 담기 시 토스트, 이미 담긴 경우 버튼 레이블 변경
 
 ### 🛒 장바구니 페이지 (`/cart`)
-- 장바구니 상품 목록
-- 수량 조절 (증가/감소)
-- 상품 제거
-- 총액 계산
-- 주문 요약
+- 목록/수량 조절/삭제/총액/주문 요약
+- “장바구니 비우기”, “상품 제거”는 확인 모달로 안전하게 처리
+- “주문하기”는 정보 모달(향후 구현 예정, 확인 시 장바구니 자동 비움)
 
-### 🔐 로그인 페이지 (`/login`)
-- 이메일/비밀번호 로그인
-- 에러 처리
-- 회원가입 페이지 링크
-
-### ✍️ 회원가입 페이지 (`/register`)
-- 이메일, 비밀번호, 이름 입력
-- 비밀번호 확인
-- 유효성 검사
-- 로그인 페이지 링크
+### 🔐 로그인/회원가입
+- Firebase 이메일/비밀번호 인증
 
 ## 🔄 상태 관리
 
-### Redux Toolkit 구조
+- **authSlice**: 사용자 인증 상태
+- **productSlice**: 상품 데이터/필터
+- **cartSlice**: 장바구니(담기/삭제/수량/총액)
 
-- **authSlice**: 사용자 인증 상태 (로그인/로그아웃, 사용자 정보)
-- **productSlice**: 상품 데이터 관리 (목록, 필터링, 검색)
-- **cartSlice**: 장바구니 상태 (상품 추가/제거, 수량 조절)
-
-### 주요 액션
-
-- `fetchProducts()`: 모든 상품 가져오기
-- `addToCart(product)`: 장바구니에 상품 추가
-- `loginUser(credentials)`: 사용자 로그인
-- `registerUser(userData)`: 사용자 회원가입
+주요 Thunk/Action:
+- `fetchProducts()`
+- `addToCart(product)`
+- `loginUser(credentials)`, `registerUser(userData)`
 
 ## 🎨 스타일링
 
-- **Tailwind CSS**: 유틸리티 우선 CSS 프레임워크
-- **반응형 디자인**: 모바일, 태블릿, 데스크톱 최적화
-- **컴포넌트별 스타일**: 재사용 가능한 스타일 클래스
-- **다크모드 지원**: 향후 구현 예정
+- Tailwind CSS + 반응형
+- 미니카트 드롭다운(hover), 라인 클램프를 통한 카드 타이틀 정렬
 
-## 🧪 테스트
+## 🧪 테스트/품질(권장)
 
 ```bash
-# 린트 검사
 npm run lint
-
-# 타입 체크
 npm run type-check
 ```
 
-## 📦 배포
+## 📦 배포(예시)
 
-### Vercel 배포
+- Vercel/Netlify 등 정적 호스팅 서비스 권장
 
-1. Vercel CLI 설치
-   ```bash
-   npm i -g vercel
-   ```
-
-2. 배포
-   ```bash
-   vercel
-   ```
-
-### Netlify 배포
-
-1. `dist` 폴더를 Netlify에 드래그 앤 드롭
-2. 또는 Git 연동을 통한 자동 배포
-
-## 🤝 기여하기
-
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-## 📄 라이선스
-
-이 프로젝트는 MIT 라이선스 하에 배포됩니다. 자세한 내용은 `LICENSE` 파일을 참조하세요.
-
-## 📞 지원
-
-프로젝트에 대한 질문이나 제안사항이 있으시면 이슈를 생성해 주세요.
-
-## 🙏 감사의 말
-
-- [FakeStore API](https://fakestoreapi.com/) - 테스트용 상품 데이터 제공
-- [Firebase](https://firebase.google.com/) - 인증 서비스 제공
-- [Tailwind CSS](https://tailwindcss.com/) - 스타일링 프레임워크
-
----
-
-**개발자**: React & TypeScript 개발팀  
-**최종 업데이트**: 2024년  
-**버전**: 1.0.0
+## 변경 이력(요약)
+- LazyImage 도입 및 스켈레톤/IntersectionObserver 적용
+- react-hot-toast 알림 추가 및 전역 `Toaster` 설정
+- 장바구니 모달(확인/정보) 추가: 비우기/삭제 확인, 주문 안내
+- 헤더 미니카트 프리뷰 추가
+- 푸터 빠른 링크: 로그인 상태에 따라 로그인/로그아웃 토글
+- 메인/상세 카드 버튼: 담김 여부에 따라 레이블 변경

@@ -12,15 +12,17 @@ import { useNavigate } from 'react-router-dom'
 import type { CartItem } from '../../types'
 import { toast } from 'react-hot-toast'
 import ConfirmDialog from '../../components/ConfirmDialog'
+import InfoDialog from '../../components/InfoDialog'
 
 const CartPage = () => {
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
   const { items, total } = useAppSelector((state) => state.cart)
 
-  // Confirm dialog state
+  // Confirm/Info dialog state
   const [isClearOpen, setIsClearOpen] = useState(false)
   const [pendingRemoveId, setPendingRemoveId] = useState<number | null>(null)
+  const [isCheckoutInfoOpen, setIsCheckoutInfoOpen] = useState(false)
 
   // 장바구니가 비어있는 경우
   if (items.length === 0) {
@@ -94,14 +96,19 @@ const CartPage = () => {
     setIsClearOpen(false)
   }
 
-  // 주문하기 핸들러 (향후 구현 예정)
-  const handleCheckout = () => {
-    toast('주문하기 기능은 향후 구현 예정입니다.', { icon: '🛒' })
+  // 주문하기 핸들러 → 모달 안내
+  const handleCheckout = () => setIsCheckoutInfoOpen(true)
+
+  const confirmCheckoutInfo = () => {
+    setIsCheckoutInfoOpen(false)
+    dispatch(clearCart())
   }
+
+  const cancelCheckoutInfo = () => setIsCheckoutInfoOpen(false)
 
   return (
     <div className="max-w-6xl mx-auto">
-      {/* Confirm Dialogs */}
+      {/* Dialogs */}
       <ConfirmDialog
         isOpen={isClearOpen}
         title="장바구니 비우기"
@@ -119,6 +126,15 @@ const CartPage = () => {
         cancelText="취소"
         onConfirm={confirmRemoveItem}
         onCancel={() => setPendingRemoveId(null)}
+      />
+      <InfoDialog
+        isOpen={isCheckoutInfoOpen}
+        title="주문 안내"
+        messages={["주문하기기 기능은 향후 구현 예정 입니다.", "확인을 누르시면 장바구니는 자동으로 비워집니다."]}
+        confirmText="확인"
+        cancelText="취소"
+        onConfirm={confirmCheckoutInfo}
+        onCancel={cancelCheckoutInfo}
       />
 
       {/* 페이지 헤더 */}
