@@ -11,6 +11,11 @@
 - [x] 환경 변수 설정 (.env 파일)
 - [x] Firebase 인증 서비스 초기화
 - [x] Firebase 설정 타입 정의
+- [ ] **Firebase 환경변수 보안 설정**
+  - [ ] .env.local 파일 생성 (로컬 개발용)
+  - [ ] .env.production 파일 생성 (프로덕션용)
+  - [ ] GitHub Secrets 설정 (배포용)
+  - [ ] Firebase 설정값 Git 추적 제거
 
 ## 3. Redux 상태 관리 설정
 - [x] Redux Toolkit 스토어 설정
@@ -69,6 +74,12 @@
 - [ ] 환경 변수 정리
 - [x] README.md 작성/갱신
 - [x] 실행 방법 문서화
+- [ ] **GitHub Pages 배포 설정**
+  - [ ] gh-pages 패키지 설치
+  - [ ] 배포 스크립트 추가 (package.json)
+  - [ ] Vite 설정 최적화 (base URL)
+  - [ ] GitHub Actions 워크플로우 설정
+  - [ ] SPA 라우팅 이슈 해결 (_redirects 또는 404.html)
 
 ---
 
@@ -95,4 +106,6 @@
 - 🌙 다크모드 지원
 - 🧪 테스트 코드 작성
 - 📦 배포 설정
+- 🔐 Firebase 환경변수 보안 설정
+- 🚀 GitHub Pages 배포 구성
 
