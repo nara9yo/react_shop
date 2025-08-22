@@ -33,8 +33,7 @@ const Navbar = () => {
         <div className="flex justify-between items-center h-16">
           {/* 로고 */}
           <Link to="/" className="flex items-center space-x-2">
-            <Logo className="w-7 h-7 text-indigo-600" />
-            <span className="text-xl font-bold text-slate-900">ReactShop</span>
+            <span className="text-xl font-bold text-slate-900">🛍️ ReactShop</span>
           </Link>
 
           {/* 네비게이션 메뉴 */}
