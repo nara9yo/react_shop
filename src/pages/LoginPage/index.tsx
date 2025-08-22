@@ -207,6 +207,16 @@ const LoginPage = () => {
               )}
             </button>
           </div>
+
+          {/* 회원가입 이동 버튼 */}
+          <div>
+            <Link
+              to="/register"
+              className="mt-3 w-full inline-flex items-center justify-center py-2 px-4 rounded-md border border-gray-300 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+            >
+              회원가입
+            </Link>
+          </div>
           
           {/* 추가 링크 */}
           <div className="text-center">

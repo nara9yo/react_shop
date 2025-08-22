@@ -29,10 +29,10 @@ const ProductCard = ({ product }: ProductCardProps) => {
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden h-full flex flex-col">
+    <div className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden h-full flex flex-col border border-slate-100">
       <Link to={`/product/${product.id}`} className="block flex flex-col h-full">
         {/* 상품 이미지 */}
-        <div className="aspect-square relative bg-gray-100">
+        <div className="aspect-square relative bg-slate-50">
           <div className="absolute inset-0 flex items-center justify-center p-4">
             <LazyImage
               src={product.image}
@@ -47,11 +47,11 @@ const ProductCard = ({ product }: ProductCardProps) => {
         <div className="p-4 flex flex-col flex-1">
           {/* 상단 메타 (카테고리 + 제목) 고정 높이로 정렬 유지 */}
           <div className="mb-3 h-[4.75rem] pb-0.5 overflow-hidden">
-            <span className="block text-xs text-gray-500 uppercase tracking-wide font-semibold mb-2">
+            <span className="block text-xs text-slate-500 uppercase tracking-wide font-semibold mb-2">
               {product.category}
             </span>
             {/* 제목: 2줄 초과 시 ... 으로 줄임 (CSS line-clamp) */}
-            <h3 className="text-lg font-semibold text-gray-900 line-clamp-2">
+            <h3 className="text-lg font-semibold text-slate-900 line-clamp-2">
               {product.title}
             </h3>
           </div>
@@ -64,8 +64,8 @@ const ProductCard = ({ product }: ProductCardProps) => {
                   key={i}
                   className={`w-4 h-4 ${
                     i < Math.floor(product.rating.rate)
-                      ? 'text-yellow-400'
-                      : 'text-gray-300'
+                      ? 'text-amber-400'
+                      : 'text-slate-300'
                   }`}
                   fill="currentColor"
                   viewBox="0 0 20 20"
@@ -74,19 +74,19 @@ const ProductCard = ({ product }: ProductCardProps) => {
                 </svg>
               ))}
             </div>
-            <span className="ml-2 text-sm text-gray-600">
+            <span className="ml-2 text-sm text-slate-600">
               {product.rating.rate} ({product.rating.count})
             </span>
           </div>
 
           {/* 가격 및 버튼 */}
           <div className="mt-auto flex items-center justify-between">
-            <span className="text-2xl font-bold text-gray-900">
+            <span className="text-2xl font-bold text-slate-900">
               {formatPrice(product.price)}
             </span>
             <button
               onClick={handleAddToCart}
-              className={`${isInCart ? 'bg-gray-400 hover:bg-gray-500' : 'bg-blue-500 hover:bg-blue-600'} text-white px-4 py-2 rounded-md font-medium transition-colors whitespace-nowrap`}
+              className={`${isInCart ? 'bg-slate-400 hover:bg-slate-500' : 'bg-indigo-600 hover:bg-indigo-700'} text-white px-4 py-2 rounded-md font-medium transition-colors whitespace-nowrap`}
             >
               {isInCart ? '장바구니에 담긴 제품' : '장바구니 담기'}
             </button>
