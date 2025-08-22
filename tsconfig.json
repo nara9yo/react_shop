@@ -24,5 +24,10 @@
     "noImplicitThis": false,
     "noUncheckedIndexedAccess": false
   },
-  "include": ["src"]
+  "include": ["src"],
+  "exclude": [
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/__tests__/**"
+  ]
 }

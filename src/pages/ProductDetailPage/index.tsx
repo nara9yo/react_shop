@@ -7,12 +7,14 @@ import { addToCart } from '../../store/slices/cartSlice'
 import Loading from '../../components/Loading'
 import ErrorMessage from '../../components/ErrorMessage'
 import type { Product } from '../../types'
-import { toast } from 'react-hot-toast'
+import useToast from '../../hooks/useToast'
+import { formatCurrency } from '../../utils/currency'
 
 const ProductDetailPage = () => {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
+  const { success } = useToast()
   
   // 로컬 상태
   const [quantity, setQuantity] = useState(1)
@@ -51,7 +53,7 @@ const ProductDetailPage = () => {
       for (let i = 0; i < quantity; i++) {
         dispatch(addToCart(product))
       }
-      toast.success(`${product.title}을(를) 장바구니에 ${quantity}개 추가했습니다!`)
+      success(`${product.title}을(를) 장바구니에 ${quantity}개 추가했습니다!`)
       setQuantity(1)
     }
   }
@@ -90,9 +92,7 @@ const ProductDetailPage = () => {
   }
   
   // 가격 포맷팅
-  const formatPrice = (price: number) => {
-    return `$${price.toFixed(2)}`
-  }
+  const formatPrice = (price: number) => formatCurrency(price, 'USD', 'en-US')
   
   // 별점 렌더링
   const renderStars = (rating: number) => {

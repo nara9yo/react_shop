@@ -10,7 +10,8 @@ import {
 } from '../../store/slices/cartSlice'
 import { useNavigate } from 'react-router-dom'
 import type { CartItem } from '../../types'
-import { toast } from 'react-hot-toast'
+import useToast from '../../hooks/useToast'
+import { formatCurrency } from '../../utils/currency'
 import ConfirmDialog from '../../components/ConfirmDialog'
 import InfoDialog from '../../components/InfoDialog'
 
@@ -54,28 +55,28 @@ const CartPage = () => {
   }
 
   // 가격 포맷팅
-  const formatPrice = (price: number) => {
-    return `$${price.toFixed(2)}`
-  }
+  const formatPrice = (price: number) => formatCurrency(price, 'USD', 'en-US')
+
+  const { success } = useToast()
 
   // 수량 변경 핸들러
   const handleQuantityChange = (item: CartItem, newQuantity: number) => {
     if (newQuantity >= 1 && newQuantity <= 99) {
       dispatch(updateQuantity({ id: item.id, quantity: newQuantity }))
-      toast.success('수량이 변경되었습니다.')
+      success('수량이 변경되었습니다.')
     }
   }
 
   // 수량 증가 핸들러
   const handleIncreaseQuantity = (itemId: number) => {
     dispatch(increaseQuantity(itemId))
-    toast.success('수량이 증가되었습니다.')
+    success('수량이 증가되었습니다.')
   }
 
   // 수량 감소 핸들러
   const handleDecreaseQuantity = (itemId: number) => {
     dispatch(decreaseQuantity(itemId))
-    toast.success('수량이 감소되었습니다.')
+    success('수량이 감소되었습니다.')
   }
 
   // 상품 제거(모달 오픈)
@@ -83,7 +84,7 @@ const CartPage = () => {
   const confirmRemoveItem = () => {
     if (pendingRemoveId !== null) {
       dispatch(removeFromCart(pendingRemoveId))
-      toast.success('상품이 장바구니에서 제거되었습니다.')
+      success('상품이 장바구니에서 제거되었습니다.')
       setPendingRemoveId(null)
     }
   }
@@ -92,7 +93,7 @@ const CartPage = () => {
   const openClearCart = () => setIsClearOpen(true)
   const confirmClearCart = () => {
     dispatch(clearCart())
-    toast.success('장바구니를 비웠습니다.')
+    success('장바구니를 비웠습니다.')
     setIsClearOpen(false)
   }
 

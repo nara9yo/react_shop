@@ -2,6 +2,7 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { useAppSelector, useAppDispatch } from '../../store/hooks'
 import { logoutUser } from '../../store/slices/authSlice'
+import { formatCurrency } from '../../utils/currency'
 import Logo from '../../components/Logo'
 
 const Navbar = () => {
@@ -24,7 +25,7 @@ const Navbar = () => {
     }
   }
 
-  const formatPrice = (price: number) => `$${price.toFixed(2)}`
+  const formatPrice = (price: number) => formatCurrency(price, 'USD', 'en-US')
 
   return (
     <nav className="bg-white/90 backdrop-blur supports-[backdrop-filter]:bg-white/70 shadow-md border-b border-slate-100">

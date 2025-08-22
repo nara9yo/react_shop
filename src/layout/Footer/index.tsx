@@ -2,18 +2,20 @@
 import { Link } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
 import { logoutUser } from '../../store/slices/authSlice'
-import { toast } from 'react-hot-toast'
+import useToast from '../../hooks/useToast'
 
 const Footer = () => {
   const dispatch = useAppDispatch()
   const { isAuthenticated } = useAppSelector((state) => state.auth)
 
+  const { success, error } = useToast()
+
   const handleLogout = async () => {
     try {
       await dispatch(logoutUser()).unwrap()
-      toast.success('로그아웃 되었습니다.')
+      success('로그아웃 되었습니다.')
     } catch {
-      toast.error('로그아웃에 실패했습니다.')
+      error('로그아웃에 실패했습니다.')
     }
   }
 

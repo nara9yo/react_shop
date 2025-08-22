@@ -4,7 +4,8 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks'
 import { addToCart } from '../../store/slices/cartSlice'
 import type { Product } from '../../types'
 import LazyImage from '../LazyImage'
-import { toast } from 'react-hot-toast'
+import useToast from '../../hooks/useToast'
+import { formatCurrency } from '../../utils/currency'
 
 interface ProductCardProps {
   product: Product
@@ -12,6 +13,7 @@ interface ProductCardProps {
 
 const ProductCard = ({ product }: ProductCardProps) => {
   const dispatch = useAppDispatch()
+  const { success } = useToast()
   const { items: cartItems } = useAppSelector((state) => state.cart)
   const isInCart = cartItems.some((item) => item.id === product.id)
 
@@ -20,13 +22,11 @@ const ProductCard = ({ product }: ProductCardProps) => {
     e.preventDefault() // Link 이벤트 방지
     e.stopPropagation()
     dispatch(addToCart(product))
-    toast.success(`${product.title}을(를) 장바구니에 1개 추가했습니다!`)
+    success(`${product.title}을(를) 장바구니에 1개 추가했습니다!`)
   }
 
   // 가격 포맷팅
-  const formatPrice = (price: number) => {
-    return `$${price.toFixed(2)}`
-  }
+  const formatPrice = (price: number) => formatCurrency(price, 'USD', 'en-US')
 
   return (
     <div className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden h-full flex flex-col border border-slate-100">
