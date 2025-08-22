@@ -27,7 +27,9 @@ FakeStore API 상품 데이터를 활용한 전자상거래 데모입니다. 로
 
 ## 🖼️ 데모/스크린샷
 
-준비중
+**📱 [GitHub Pages에서 바로 사용해보기](https://nara9yo.github.io/react_shop/)**
+
+![Image](https://github.com/user-attachments/assets/44765e6e-01b3-46f2-b4c3-fbcd502a9d19)
 
 ## ✨ 주요 기능
 
