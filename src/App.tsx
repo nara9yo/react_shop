@@ -12,6 +12,7 @@ import ProductDetailPage from './pages/ProductDetailPage'
 import CartPage from './pages/CartPage'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
+import NotFoundPage from './pages/NotFoundPage'
 
 // 레이아웃 컴포넌트
 function Layout() {
@@ -48,6 +49,8 @@ function App() {
         <Route path="login" element={<LoginPage />} />
         <Route path="register" element={<RegisterPage />} />
       </Route>
+      {/* 404 페이지 - 모든 경로에 매치되지 않을 때 */}
+      <Route path="*" element={<NotFoundPage />} />
     </Routes>
   )
 }
